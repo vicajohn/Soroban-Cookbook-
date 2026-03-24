@@ -653,7 +653,7 @@ impl CustomStructsContract {
     /// Demonstrate struct validation
     pub fn validate_struct(_env: Env, profile: UserProfile) -> Result<bool, ContractError> {
         // Validate name length
-        if profile.name.len() == 0 || profile.name.len() > 100 {
+        if profile.name.is_empty() || profile.name.len() > 100 {
             return Err(ContractError::InvalidFieldValue);
         }
 
@@ -664,7 +664,7 @@ impl CustomStructsContract {
 
         // Validate email format if present
         if let Some(email) = &profile.email {
-            if email.len() == 0 || email.len() > 255 {
+            if email.is_empty() || email.len() > 255 {
                 return Err(ContractError::InvalidFieldValue);
             }
             // In a real implementation, you'd validate email format
@@ -705,6 +705,5 @@ impl CustomStructsContract {
 }
 
 // Pull in the dedicated test module.
-#[cfg(test)]
 #[cfg(test)]
 mod test;

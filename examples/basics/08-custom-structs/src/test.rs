@@ -1,4 +1,3 @@
-#![cfg(test)]
 use super::*;
 use soroban_sdk::testutils::Address as AddressTest;
 use soroban_sdk::{Env, String, Vec};
@@ -25,7 +24,7 @@ fn test_basic_struct_creation() {
     assert_eq!(profile.name, name);
     assert_eq!(profile.email, Some(email));
     assert_eq!(profile.reputation, 100);
-    assert_eq!(profile.verified, false);
+    assert!(!profile.verified);
 }
 
 #[test]
@@ -49,7 +48,7 @@ fn test_asset_info_struct() {
     assert_eq!(asset.name, name);
     assert_eq!(asset.decimals, 8);
     assert_eq!(asset.total_supply, Some(21000000));
-    assert_eq!(asset.native, false);
+    assert!(!asset.native);
 }
 
 #[test]
@@ -136,12 +135,9 @@ fn test_nested_structs() {
     // Test nested access
     assert_eq!(extended_profile.profile.name, String::from_str(&env, "Bob"));
     assert_eq!(extended_profile.preferences.theme, Theme::Dark);
-    assert_eq!(
-        extended_profile.preferences.notifications.email_enabled,
-        true
-    );
+    assert!(extended_profile.preferences.notifications.email_enabled);
     assert_eq!(extended_profile.statistics.total_transactions, 100);
-    assert_eq!(extended_profile.security.two_factor_enabled, true);
+    assert!(extended_profile.security.two_factor_enabled);
 }
 
 #[test]
@@ -261,7 +257,7 @@ fn test_user_profile_management() {
         assert_eq!(profile.name, name);
         assert_eq!(profile.email, Some(email.clone()));
         assert_eq!(profile.reputation, 0);
-        assert_eq!(profile.verified, false);
+        assert!(!profile.verified);
 
         // Get user profile
         let retrieved_profile =
@@ -376,12 +372,9 @@ fn test_extended_profile() {
         assert_eq!(extended_profile.profile.name, name);
         assert_eq!(extended_profile.preferences.language, language);
         assert_eq!(extended_profile.preferences.theme, Theme::Auto);
-        assert_eq!(
-            extended_profile.preferences.notifications.email_enabled,
-            true
-        );
+        assert!(extended_profile.preferences.notifications.email_enabled);
         assert_eq!(extended_profile.statistics.total_transactions, 0);
-        assert_eq!(extended_profile.security.two_factor_enabled, false);
+        assert!(!extended_profile.security.two_factor_enabled);
 
         // Get extended profile
         let retrieved_profile =

@@ -79,5 +79,4 @@ impl ErrorHandlingContract {
 }
 
 #[cfg(test)]
-#[cfg(test)]
 mod test;

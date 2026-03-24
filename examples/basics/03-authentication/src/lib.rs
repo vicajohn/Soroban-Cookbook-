@@ -289,5 +289,4 @@ impl AuthContract {
 }
 
 #[cfg(test)]
-#[cfg(test)]
 mod test;

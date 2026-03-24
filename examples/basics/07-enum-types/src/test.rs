@@ -1,4 +1,3 @@
-#![cfg(test)]
 use super::*;
 use soroban_sdk::testutils::Address as AddressTest;
 use soroban_sdk::Env;
@@ -259,26 +258,31 @@ fn test_enum_comparisons() {
 
     // Test role comparisons
     env.as_contract(&contract_id, || {
-        assert_eq!(
-            EnumContract::compare_enums(env.clone(), UserRole::Admin, UserRole::User),
-            true
-        );
-        assert_eq!(
-            EnumContract::compare_enums(env.clone(), UserRole::User, UserRole::Admin),
-            false
-        );
-        assert_eq!(
-            EnumContract::compare_enums(env.clone(), UserRole::Owner, UserRole::Owner),
-            true
-        );
-        assert_eq!(
-            EnumContract::compare_enums(env.clone(), UserRole::Moderator, UserRole::User),
-            true
-        );
-        assert_eq!(
-            EnumContract::compare_enums(env.clone(), UserRole::None, UserRole::None),
-            true
-        );
+        assert!(EnumContract::compare_enums(
+            env.clone(),
+            UserRole::Admin,
+            UserRole::User
+        ));
+        assert!(!EnumContract::compare_enums(
+            env.clone(),
+            UserRole::User,
+            UserRole::Admin
+        ));
+        assert!(EnumContract::compare_enums(
+            env.clone(),
+            UserRole::Owner,
+            UserRole::Owner
+        ));
+        assert!(EnumContract::compare_enums(
+            env.clone(),
+            UserRole::Moderator,
+            UserRole::User
+        ));
+        assert!(EnumContract::compare_enums(
+            env.clone(),
+            UserRole::None,
+            UserRole::None
+        ));
     });
 }
 
@@ -404,10 +408,11 @@ fn test_comprehensive_workflow() {
 
     // Test enum utilities
     env.as_contract(&contract_id, || {
-        assert_eq!(
-            EnumContract::compare_enums(env.clone(), UserRole::Owner, UserRole::User),
-            true
-        );
+        assert!(EnumContract::compare_enums(
+            env.clone(),
+            UserRole::Owner,
+            UserRole::User
+        ));
         assert_eq!(EnumContract::enum_arithmetic(env.clone()), 4);
 
         let roles = EnumContract::get_all_roles(env.clone());

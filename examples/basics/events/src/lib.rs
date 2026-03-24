@@ -56,5 +56,4 @@ impl Contract {
 }
 
 #[cfg(test)]
-#[cfg(test)]
 mod test;

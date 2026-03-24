@@ -105,11 +105,9 @@ use soroban_sdk::{contract, contractimpl, contracttype, symbol_short, Address, E
 /// | 1          | Action name        | `"transfer"`         |
 /// | 2          | Primary index      | `sender: Address`    |
 /// | 3          | Secondary index    | `recipient: Address` |
-
 // ---------------------------------------------------------------------------
 // Custom event payload types
 // ---------------------------------------------------------------------------
-
 /// Payload for a token-transfer event.
 ///
 /// This struct is annotated with `#[contracttype]` so it can be serialised
@@ -375,6 +373,5 @@ impl EventsContract {
     }
 }
 
-#[cfg(test)]
 #[cfg(test)]
 mod test;

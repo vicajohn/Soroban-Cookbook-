@@ -1,7 +1,5 @@
 //! Unit tests for the Hello World contract.
 
-#![cfg(test)]
-
 use super::*;
 use soroban_sdk::{symbol_short, vec, Env};
 

@@ -374,7 +374,7 @@ impl PrimitiveTypesContract {
         rate: i32, // in basis points (10000 = 100%)
         periods: u32,
     ) -> Result<i128, ContractError> {
-        if rate < 0 || rate > 10000 {
+        if !(0..=10000).contains(&rate) {
             return Err(ContractError::InvalidInput);
         }
 
@@ -398,7 +398,7 @@ impl PrimitiveTypesContract {
         rate: i32, // in basis points
         periods: u32,
     ) -> Result<i128, ContractError> {
-        if rate < 0 || rate > 10000 {
+        if !(0..=10000).contains(&rate) {
             return Err(ContractError::InvalidInput);
         }
 
@@ -765,6 +765,5 @@ impl PrimitiveTypesContract {
 }
 
 // Pull in the dedicated test module.
-#[cfg(test)]
 #[cfg(test)]
 mod test;

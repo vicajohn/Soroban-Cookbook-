@@ -1,7 +1,5 @@
 //! Unit tests for Storage Patterns contract
 
-#![cfg(test)]
-
 use super::*;
 use soroban_sdk::testutils::Ledger as _;
 use soroban_sdk::{symbol_short, Env};

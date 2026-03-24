@@ -295,7 +295,7 @@ fn test_batch_convert_numbers() {
     let result = TypeConversionsContract::batch_convert_numbers(env.clone(), input_vec);
 
     // Should have some successful conversions
-    assert!(result.len() > 0);
+    assert!(!result.is_empty());
 }
 
 #[test]

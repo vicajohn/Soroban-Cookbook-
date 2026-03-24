@@ -56,7 +56,7 @@ impl TimelockContract {
             .expect("Not initialized");
         admin.require_auth();
 
-        if delay < MIN_DELAY || delay > MAX_DELAY {
+        if !(MIN_DELAY..=MAX_DELAY).contains(&delay) {
             panic!("Delay out of range");
         }
 
@@ -150,6 +150,5 @@ impl TimelockContract {
     }
 }
 
-#[cfg(test)]
 #[cfg(test)]
 mod test;

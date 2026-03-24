@@ -302,5 +302,4 @@ impl CustomErrorsContract {
 }
 
 #[cfg(test)]
-#[cfg(test)]
 mod test;

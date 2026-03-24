@@ -123,8 +123,8 @@ impl SorobanTypesContract {
     pub fn create_hash_bytes(env: Env, seed: u32) -> BytesN<32> {
         let seed_byte = (seed & 0xFF) as u8;
         let mut hash = [0u8; 32];
-        for i in 0..32usize {
-            hash[i] = seed_byte.wrapping_mul(i as u8 + 1);
+        for (i, byte) in hash.iter_mut().enumerate() {
+            *byte = seed_byte.wrapping_mul(i as u8 + 1);
         }
         BytesN::from_array(&env, &hash)
     }
@@ -291,6 +291,5 @@ impl SorobanTypesContract {
     }
 }
 
-#[cfg(test)]
 #[cfg(test)]
 mod test;

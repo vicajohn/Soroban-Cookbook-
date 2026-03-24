@@ -47,5 +47,4 @@ impl PersistentStorageContract {
 }
 
 #[cfg(test)]
-#[cfg(test)]
 mod test;

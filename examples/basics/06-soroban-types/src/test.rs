@@ -1,7 +1,5 @@
 //! Tests for Soroban Types demonstration.
 
-#![cfg(test)]
-
 use super::*;
 use soroban_sdk::{symbol_short, testutils::Address as _, Bytes, BytesN, String, Symbol};
 

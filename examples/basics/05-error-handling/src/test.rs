@@ -6,7 +6,6 @@
 //! - Error type verification (correct error types)
 //! - Recovery tests (error handling and graceful degradation)
 
-#![cfg(test)]
 use super::*;
 use soroban_sdk::Env;
 
@@ -196,7 +195,7 @@ fn test_error_handling_with_if_let() {
 
     if let Err(Error::InsufficientBalance) = result {
         // Handle insufficient balance gracefully
-        assert!(true); // Test passes if we get here
+        // Test passes if we get here
     } else {
         panic!("Expected InsufficientBalance error");
     }
@@ -212,7 +211,7 @@ fn test_error_handling_with_unwrap_or() {
 #[test]
 fn test_error_handling_with_unwrap_or_else() {
     let result = ErrorHandlingContract::transfer(150, 100);
-    let fallback_balance = result.unwrap_or_else(|_| 999);
+    let fallback_balance = result.unwrap_or(999);
     assert_eq!(fallback_balance, 999);
 }
 
@@ -347,5 +346,4 @@ fn test_result_vs_panic_efficiency() {
 
     // In no_std environment, we can't measure time, but we can verify
     // that both approaches complete without panicking for valid cases
-    assert!(true); // Test passes if we get here
 }

@@ -1,6 +1,5 @@
 //! Unit tests for the Event contract
 
-#![cfg(test)]
 use super::*;
 use soroban_sdk::{
     symbol_short, testutils::Address as _, testutils::Events as _, Address, Env, Symbol, TryFromVal,
@@ -177,7 +176,7 @@ fn test_event_emission_verification_multiple() {
     assert_eq!(events.len(), 4, "Four events should be emitted");
 
     // Verify each event in sequence
-    for (_i, event) in events.iter().enumerate() {
+    for event in events.iter() {
         let (contract, topics, data) = event;
         assert_eq!(
             contract, contract_id,

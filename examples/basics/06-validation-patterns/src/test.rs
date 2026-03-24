@@ -1,4 +1,3 @@
-#![cfg(test)]
 use super::*;
 use soroban_sdk::testutils::{Address as AddressTest, Ledger as LedgerTest};
 use soroban_sdk::{Env, String, Vec};
@@ -459,7 +458,7 @@ fn test_error_codes() {
     let mut codes = Vec::new(&env);
     for error in errors.iter() {
         let code = *error as u32;
-        assert!(!codes.contains(&code), "Duplicate error code: {}", code);
+        assert!(!codes.contains(code), "Duplicate error code: {}", code);
         codes.push_back(code);
     }
 
@@ -482,7 +481,7 @@ fn test_error_codes() {
             | ValidationError::TimestampInPast
             | ValidationError::TimestampInDistantFuture => {
                 assert!(
-                    code >= 100 && code < 200,
+                    (100..200).contains(&code),
                     "Parameter validation error should be in range 100-199"
                 );
             }
@@ -498,7 +497,7 @@ fn test_error_codes() {
             | ValidationError::RateLimitExceeded
             | ValidationError::CooldownActive => {
                 assert!(
-                    code >= 200 && code < 300,
+                    (200..300).contains(&code),
                     "State validation error should be in range 200-299"
                 );
             }
@@ -513,7 +512,7 @@ fn test_error_codes() {
             | ValidationError::WrongContract
             | ValidationError::Blacklisted => {
                 assert!(
-                    code >= 300 && code < 400,
+                    (300..400).contains(&code),
                     "Authorization validation error should be in range 300-399"
                 );
             }

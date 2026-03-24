@@ -5,8 +5,6 @@
 //! - Correct topic count and topic values (including indexed parameters)
 //! - Correct data payload deserialization for custom types
 
-#![cfg(test)]
-
 use super::*;
 use soroban_sdk::{
     symbol_short,

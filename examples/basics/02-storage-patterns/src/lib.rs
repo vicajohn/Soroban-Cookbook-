@@ -36,9 +36,12 @@ impl StorageContract {
         // Parameters: (key, threshold_ledgers, extend_to_ledgers)
         // This extends TTL to 100 ledgers when it falls below 100
         env.storage().persistent().extend_ttl(&key, 100, 100);
-        
+
         // EVENT: Persistent storage updated
-        env.events().publish((symbol_short!("persist"), symbol_short!("set")), (key, value));
+        env.events().publish(
+            (symbol_short!("persist"), symbol_short!("set")),
+            (key, value),
+        );
     }
 
     /// Retrieves a value from persistent storage.
@@ -58,9 +61,10 @@ impl StorageContract {
     /// Removes a value from persistent storage.
     pub fn remove_persistent(env: Env, key: Symbol) {
         env.storage().persistent().remove(&key);
-        
+
         // EVENT: Persistent storage removed
-        env.events().publish((symbol_short!("persist"), symbol_short!("remove")), key);
+        env.events()
+            .publish((symbol_short!("persist"), symbol_short!("remove")), key);
     }
 
     // ==================== TEMPORARY STORAGE ====================
@@ -81,9 +85,10 @@ impl StorageContract {
     /// - Temporary state within a single operation
     pub fn set_temporary(env: Env, key: Symbol, value: u64) {
         env.storage().temporary().set(&key, &value);
-        
+
         // EVENT: Temporary storage updated
-        env.events().publish((symbol_short!("temp"), symbol_short!("set")), (key, value));
+        env.events()
+            .publish((symbol_short!("temp"), symbol_short!("set")), (key, value));
     }
 
     /// Retrieves a value from temporary storage.
@@ -120,9 +125,12 @@ impl StorageContract {
 
         // Extend instance storage TTL
         env.storage().instance().extend_ttl(100, 100);
-        
+
         // EVENT: Instance storage updated
-        env.events().publish((symbol_short!("instance"), symbol_short!("set")), (key, value));
+        env.events().publish(
+            (symbol_short!("instance"), symbol_short!("set")),
+            (key, value),
+        );
     }
 
     /// Retrieves a value from instance storage.
@@ -141,12 +149,12 @@ impl StorageContract {
     /// Removes a value from instance storage.
     pub fn remove_instance(env: Env, key: Symbol) {
         env.storage().instance().remove(&key);
-        
+
         // EVENT: Instance storage removed
-        env.events().publish((symbol_short!("instance"), symbol_short!("remove")), key);
+        env.events()
+            .publish((symbol_short!("instance"), symbol_short!("remove")), key);
     }
 }
 
-#[cfg(test)]
 #[cfg(test)]
 mod test;

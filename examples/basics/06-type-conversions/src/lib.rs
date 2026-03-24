@@ -273,7 +273,7 @@ impl TypeConversionsContract {
         match value_type {
             1 => {
                 // Simple validation: check if string looks like a number
-                if raw_value.len() == 0 {
+                if raw_value.is_empty() {
                     panic!("InvalidStringFormat");
                 }
                 // For simplicity, just return the original if non-empty
@@ -315,7 +315,7 @@ impl TypeConversionsContract {
             let value_str = values.get(i).unwrap();
 
             // Simple validation - if it's a non-empty string, treat as valid number
-            if value_str.len() > 0 {
+            if !value_str.is_empty() {
                 // For demo purposes, convert based on string content
                 // In a real implementation, you'd parse the string properly
                 if value_str.len() == 3 {

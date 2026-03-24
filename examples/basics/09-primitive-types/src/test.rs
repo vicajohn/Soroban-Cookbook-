@@ -1,4 +1,3 @@
-#![cfg(test)]
 use super::*;
 use soroban_sdk::Env;
 
@@ -199,53 +198,26 @@ fn test_boolean_operations() {
 
     env.as_contract(&contract_id, || {
         // Test logical operations
-        assert_eq!(
-            PrimitiveTypesContract::bool_and(env.clone(), true, true),
-            true
-        );
-        assert_eq!(
-            PrimitiveTypesContract::bool_and(env.clone(), true, false),
-            false
-        );
-        assert_eq!(
-            PrimitiveTypesContract::bool_and(env.clone(), false, false),
-            false
-        );
+        assert!(PrimitiveTypesContract::bool_and(env.clone(), true, true));
+        assert!(!PrimitiveTypesContract::bool_and(env.clone(), true, false));
+        assert!(!PrimitiveTypesContract::bool_and(env.clone(), false, false));
 
-        assert_eq!(
-            PrimitiveTypesContract::bool_or(env.clone(), true, false),
-            true
-        );
-        assert_eq!(
-            PrimitiveTypesContract::bool_or(env.clone(), false, false),
-            false
-        );
-        assert_eq!(
-            PrimitiveTypesContract::bool_or(env.clone(), true, true),
-            true
-        );
+        assert!(PrimitiveTypesContract::bool_or(env.clone(), true, false));
+        assert!(!PrimitiveTypesContract::bool_or(env.clone(), false, false));
+        assert!(PrimitiveTypesContract::bool_or(env.clone(), true, true));
 
-        assert_eq!(PrimitiveTypesContract::bool_not(env.clone(), true), false);
-        assert_eq!(PrimitiveTypesContract::bool_not(env.clone(), false), true);
+        assert!(!PrimitiveTypesContract::bool_not(env.clone(), true));
+        assert!(PrimitiveTypesContract::bool_not(env.clone(), false));
 
-        assert_eq!(
-            PrimitiveTypesContract::bool_xor(env.clone(), true, false),
-            true
-        );
-        assert_eq!(
-            PrimitiveTypesContract::bool_xor(env.clone(), true, true),
-            false
-        );
-        assert_eq!(
-            PrimitiveTypesContract::bool_xor(env.clone(), false, false),
-            false
-        );
+        assert!(PrimitiveTypesContract::bool_xor(env.clone(), true, false));
+        assert!(!PrimitiveTypesContract::bool_xor(env.clone(), true, true));
+        assert!(!PrimitiveTypesContract::bool_xor(env.clone(), false, false));
 
         // Test storage
         assert_eq!(PrimitiveTypesContract::set_bool(env.clone(), true), Ok(()));
-        assert_eq!(PrimitiveTypesContract::get_bool(env.clone()), Ok(true));
+        assert!(PrimitiveTypesContract::get_bool(env.clone()).unwrap());
         assert_eq!(PrimitiveTypesContract::set_bool(env.clone(), false), Ok(()));
-        assert_eq!(PrimitiveTypesContract::get_bool(env.clone()), Ok(false));
+        assert!(!PrimitiveTypesContract::get_bool(env.clone()).unwrap());
     });
 }
 
@@ -650,31 +622,43 @@ fn test_comparisons() {
         assert_eq!(PrimitiveTypesContract::compare_i32(env.clone(), 10, -10), 1);
 
         // Test range checking
-        assert_eq!(
-            PrimitiveTypesContract::is_in_range_u32(env.clone(), 10, 5, 15),
-            true
-        );
-        assert_eq!(
-            PrimitiveTypesContract::is_in_range_u32(env.clone(), 4, 5, 15),
-            false
-        );
-        assert_eq!(
-            PrimitiveTypesContract::is_in_range_u32(env.clone(), 16, 5, 15),
-            false
-        );
+        assert!(PrimitiveTypesContract::is_in_range_u32(
+            env.clone(),
+            10,
+            5,
+            15
+        ));
+        assert!(!PrimitiveTypesContract::is_in_range_u32(
+            env.clone(),
+            4,
+            5,
+            15
+        ));
+        assert!(!PrimitiveTypesContract::is_in_range_u32(
+            env.clone(),
+            16,
+            5,
+            15
+        ));
 
-        assert_eq!(
-            PrimitiveTypesContract::is_in_range_i32(env.clone(), 10, 5, 15),
-            true
-        );
-        assert_eq!(
-            PrimitiveTypesContract::is_in_range_i32(env.clone(), -10, -15, -5),
-            true
-        );
-        assert_eq!(
-            PrimitiveTypesContract::is_in_range_i32(env.clone(), -16, -15, -5),
-            false
-        );
+        assert!(PrimitiveTypesContract::is_in_range_i32(
+            env.clone(),
+            10,
+            5,
+            15
+        ));
+        assert!(PrimitiveTypesContract::is_in_range_i32(
+            env.clone(),
+            -10,
+            -15,
+            -5
+        ));
+        assert!(!PrimitiveTypesContract::is_in_range_i32(
+            env.clone(),
+            -16,
+            -15,
+            -5
+        ));
 
         // Test clamping
         assert_eq!(

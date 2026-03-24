@@ -700,5 +700,4 @@ impl ValidationContract {
 }
 
 #[cfg(test)]
-#[cfg(test)]
 mod test;

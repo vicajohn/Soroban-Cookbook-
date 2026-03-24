@@ -138,5 +138,4 @@ impl MultiPartyAuthContract {
 }
 
 #[cfg(test)]
-#[cfg(test)]
 mod test;

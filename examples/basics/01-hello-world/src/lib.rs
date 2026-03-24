@@ -59,5 +59,4 @@ impl HelloContract {
 
 // Pull in the dedicated test module.
 #[cfg(test)]
-#[cfg(test)]
 mod test;
