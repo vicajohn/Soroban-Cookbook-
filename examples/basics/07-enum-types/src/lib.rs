@@ -18,7 +18,8 @@
 
 #![no_std]
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, symbol_short, vec, Address, Env, Vec,
+    contract, contracterror, contractimpl, contracttype, symbol_short, vec, Address, Env, Symbol,
+    Vec,
 };
 
 // ---------------------------------------------------------------------------
@@ -70,6 +71,56 @@ pub enum ValidationResult {
     RequiresApproval = 2,
     /// Validation is pending
     Pending = 3,
+}
+
+// ---------------------------------------------------------------------------
+// Enums with Associated Data
+// ---------------------------------------------------------------------------
+
+// Soroban's #[contracttype] macro does not support named fields inside enum
+// variants.  The idiomatic pattern is to define a separate #[contracttype]
+// struct for each variant's payload and then use a tuple variant that wraps
+// that struct.
+
+/// Payload for a token transfer.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TransferParams {
+    pub from: Address,
+    pub to: Address,
+    pub amount: i128,
+}
+
+/// Payload for minting new tokens.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct MintParams {
+    pub to: Address,
+    pub amount: i128,
+}
+
+/// Payload for burning tokens.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct BurnParams {
+    pub from: Address,
+    pub amount: i128,
+}
+
+/// An asset operation whose variants each carry different data structs.
+///
+/// Pattern matching on this enum extracts the inner struct, whose fields
+/// are then accessed by name — the Soroban-idiomatic way of writing
+/// enums with data.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum AssetOperation {
+    /// Transfer tokens from one address to another.
+    Transfer(TransferParams),
+    /// Mint new tokens to an address.
+    Mint(MintParams),
+    /// Burn tokens held by an address.
+    Burn(BurnParams),
 }
 
 // ---------------------------------------------------------------------------
@@ -263,6 +314,54 @@ impl EnumContract {
             UserRole::Admin,
             UserRole::Owner,
         ]
+    }
+
+    // ---------------------------------------------------------------------------
+    // Enums with Associated Data
+    // ---------------------------------------------------------------------------
+
+    /// Execute an `AssetOperation`, extracting its inner struct via pattern matching.
+    ///
+    /// Returns the effective signed amount:
+    /// - Transfer / Mint → positive amount
+    /// - Burn → negative amount (signals supply reduction)
+    ///
+    /// Demonstrates matching on tuple variants and accessing fields by name
+    /// on the extracted struct.
+    pub fn process_asset_op(_env: Env, op: AssetOperation) -> Result<i128, ContractError> {
+        match op {
+            AssetOperation::Transfer(p) => {
+                if p.amount <= 0 {
+                    return Err(ContractError::InvalidAmount);
+                }
+                Ok(p.amount)
+            }
+            AssetOperation::Mint(p) => {
+                if p.amount <= 0 {
+                    return Err(ContractError::InvalidAmount);
+                }
+                Ok(p.amount)
+            }
+            AssetOperation::Burn(p) => {
+                if p.amount <= 0 {
+                    return Err(ContractError::InvalidAmount);
+                }
+                // Burn reduces supply — return negative to signal that.
+                Ok(-p.amount)
+            }
+        }
+    }
+
+    /// Return a short `Symbol` label identifying the operation kind.
+    ///
+    /// Uses `_` to discard the inner struct — useful when only the variant
+    /// type matters, not its data.
+    pub fn op_kind(_env: Env, op: AssetOperation) -> Symbol {
+        match op {
+            AssetOperation::Transfer(_) => symbol_short!("transfer"),
+            AssetOperation::Mint(_) => symbol_short!("mint"),
+            AssetOperation::Burn(_) => symbol_short!("burn"),
+        }
     }
 
     // ---------------------------------------------------------------------------

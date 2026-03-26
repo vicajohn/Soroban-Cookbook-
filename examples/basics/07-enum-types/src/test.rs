@@ -1,6 +1,6 @@
 use super::*;
 use soroban_sdk::testutils::Address as AddressTest;
-use soroban_sdk::Env;
+use soroban_sdk::{symbol_short, Env};
 
 #[test]
 fn test_simple_enums() {
@@ -485,4 +485,128 @@ fn test_error_scenarios() {
             Err(ContractError::ValidationPending)
         );
     });
+}
+
+// ---------------------------------------------------------------------------
+// Enums with Associated Data
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_process_asset_op_transfer() {
+    let env = Env::default();
+    let from = <soroban_sdk::Address as AddressTest>::generate(&env);
+    let to = <soroban_sdk::Address as AddressTest>::generate(&env);
+
+    let op = AssetOperation::Transfer(TransferParams {
+        from,
+        to,
+        amount: 500,
+    });
+    assert_eq!(EnumContract::process_asset_op(env.clone(), op), Ok(500));
+}
+
+#[test]
+fn test_process_asset_op_mint() {
+    let env = Env::default();
+    let to = <soroban_sdk::Address as AddressTest>::generate(&env);
+
+    let op = AssetOperation::Mint(MintParams { to, amount: 1000 });
+    assert_eq!(EnumContract::process_asset_op(env.clone(), op), Ok(1000));
+}
+
+#[test]
+fn test_process_asset_op_burn_returns_negative() {
+    let env = Env::default();
+    let from = <soroban_sdk::Address as AddressTest>::generate(&env);
+
+    // Burn returns a negative amount to signal supply reduction.
+    let op = AssetOperation::Burn(BurnParams { from, amount: 250 });
+    assert_eq!(EnumContract::process_asset_op(env.clone(), op), Ok(-250));
+}
+
+#[test]
+fn test_process_asset_op_invalid_amount() {
+    let env = Env::default();
+    let from = <soroban_sdk::Address as AddressTest>::generate(&env);
+    let to = <soroban_sdk::Address as AddressTest>::generate(&env);
+
+    // Zero amount is invalid for all variants.
+    let zero_transfer = AssetOperation::Transfer(TransferParams {
+        from: from.clone(),
+        to: to.clone(),
+        amount: 0,
+    });
+    assert_eq!(
+        EnumContract::process_asset_op(env.clone(), zero_transfer),
+        Err(ContractError::InvalidAmount)
+    );
+
+    let neg_mint = AssetOperation::Mint(MintParams {
+        to: to.clone(),
+        amount: -1,
+    });
+    assert_eq!(
+        EnumContract::process_asset_op(env.clone(), neg_mint),
+        Err(ContractError::InvalidAmount)
+    );
+
+    let zero_burn = AssetOperation::Burn(BurnParams { from, amount: 0 });
+    assert_eq!(
+        EnumContract::process_asset_op(env.clone(), zero_burn),
+        Err(ContractError::InvalidAmount)
+    );
+}
+
+#[test]
+fn test_op_kind() {
+    let env = Env::default();
+    let from = <soroban_sdk::Address as AddressTest>::generate(&env);
+    let to = <soroban_sdk::Address as AddressTest>::generate(&env);
+
+    let transfer = AssetOperation::Transfer(TransferParams {
+        from: from.clone(),
+        to: to.clone(),
+        amount: 100,
+    });
+    assert_eq!(
+        EnumContract::op_kind(env.clone(), transfer),
+        symbol_short!("transfer")
+    );
+
+    let mint = AssetOperation::Mint(MintParams {
+        to: to.clone(),
+        amount: 100,
+    });
+    assert_eq!(
+        EnumContract::op_kind(env.clone(), mint),
+        symbol_short!("mint")
+    );
+
+    let burn = AssetOperation::Burn(BurnParams { from, amount: 100 });
+    assert_eq!(
+        EnumContract::op_kind(env.clone(), burn),
+        symbol_short!("burn")
+    );
+}
+
+#[test]
+fn test_enums_with_data_destructuring() {
+    let env = Env::default();
+    let from = <soroban_sdk::Address as AddressTest>::generate(&env);
+    let to = <soroban_sdk::Address as AddressTest>::generate(&env);
+
+    // Verify that the inner struct's fields can be accessed after matching.
+    let op = AssetOperation::Transfer(TransferParams {
+        from: from.clone(),
+        to: to.clone(),
+        amount: 42,
+    });
+
+    if let AssetOperation::Transfer(p) = op {
+        assert_eq!(p.from, from);
+        assert_eq!(p.to, to);
+        assert_eq!(p.amount, 42);
+    } else {
+        panic!("Expected Transfer variant");
+    }
 }
